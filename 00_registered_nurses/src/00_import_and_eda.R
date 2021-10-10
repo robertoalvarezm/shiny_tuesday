@@ -120,15 +120,17 @@ fig2
 states <- spData::us_states %>% 
   rename(state = NAME)
 
-# works
+# works - state outline ----
 leaflet(states) %>% 
   addTiles() %>% 
   addPolygons()
 
 # join nurses_tidy with states - START HERE
 nurses_states <- states %>% 
-  right_join(nurses_tidy, by = "state") %>% 
-  glimpse()
+  right_join(nurses_tidy, by = "state")
+
+# use the {sf} package to write to file
+#sf::st_write(nurses_states, here("00_registered_nurses/data", "nurses_states.shp"))
 
 # class(nurses_states$state)
 # class(states$state)
@@ -136,6 +138,7 @@ nurses_states <- states %>%
 # str(nurses_states)
 # str(states)
 
+# fills all the states blue ----
 leaflet(nurses_states) %>% 
   addTiles() %>% 
   addPolygons() 
@@ -171,3 +174,12 @@ leaflet(nurses_states) %>%
                 direction = "auto"
               )) 
 
+# hacking color palette
+nurses_states %>% 
+  select(annual_salary_avg,
+         total_employed_rn,
+         location_quotient,
+         hourly_wage_avg) %>% 
+  summary()
+# min: 0.32
+# max: 307060
