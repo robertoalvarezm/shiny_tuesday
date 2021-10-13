@@ -27,14 +27,14 @@ ui <- fluidPage(
     ## main panel ----
     mainPanel(
       
-    ### sector type barplot (ui) ----
-    plotOutput(outputId = "sector_type_barplot"),
-     
-    ### sector type line graph (ui)
-    plotOutput(outputId = "sector_type_line_graph",
-                click = "plot_click"),
-    
-    tableOutput(outputId = "table_data")
+      ### sector type barplot (ui) ----
+      plotOutput(outputId = "sector_type_barplot"),
+      
+      ### sector type line graph (ui)
+      plotOutput(outputId = "sector_type_line_graph",
+                 click = "plot_click"),
+      
+      tableOutput(outputId = "table_data")
     )
   )
 )
@@ -53,8 +53,8 @@ server <- function(input, output, session) {
     req(input$year)
     
     ggplot(data = reactive_fish(),
-         aes(x = sector_catch_type, y = value)) + 
-    geom_col()
+           aes(x = sector_catch_type, y = value)) + 
+      geom_col()
     
   }, res = 96)
   
