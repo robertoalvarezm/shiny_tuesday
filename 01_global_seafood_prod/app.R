@@ -80,9 +80,11 @@ server <- function(input, output, session) {
     req(input$year)
     
     ggplot(data = reactive_fish(),
-           aes(x = sector_catch_type, y = value)) + 
+           aes(x = sector_catch_type, y = value,
+               fill = sector_catch_type)) + 
       geom_col() + 
-      theme_bw()
+      theme_bw() +
+      theme(legend.position = "none")
     
   }, res = 96)
   

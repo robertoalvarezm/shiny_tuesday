@@ -18,6 +18,8 @@ knitr::opts_chunk$set(echo = TRUE)
   + animate changes over time
 * select multiple years and create a stacked bar chart
 
+* add hover to bar chart
+
 * fix up the labels, make it pretty(er)
 
 * change the color based on a threshold value
