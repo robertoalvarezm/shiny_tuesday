@@ -78,13 +78,16 @@ data_02 <- tibble(x = rep(0, 100),
                    rep(0.975, 10),
                    seq(0.975, 0, -0.025)))  # transparency
 
+data_02 %>% 
+  count(text)
+
 breathe_02 <- data_02 %>% 
   ggplot(aes(x = x, y = y, label = text)) +
   ggpubr::background_image(space) +
-  geom_point(size = data$size) +
-  geom_point(aes(x = 0, y = -100),
-             size = 178, color = "white", shape = 1, alpha = data$alpha) +
-  geom_text(size = data$text_size - 2, color = "#ffffff", family = "Amatic SC") +
+  geom_point(size = data_02$size) +
+  geom_point(aes(x = 0, y = 0),
+             size = 178, color = "white", shape = 1, alpha = data_02$alpha) +
+  geom_text(size = data_02$text_size - 2, color = "#ffffff", family = "Amatic SC") +
   xlim(-200, 200) + 
   ylim(-200, 200) +
   theme_void() +
