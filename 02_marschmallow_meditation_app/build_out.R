@@ -58,7 +58,7 @@ data_02 <- tibble(x = rep(0, 100),
   #' need to change size to correspond with text
   mutate(size = c(rep(20, 25),  # hold
                   seq(20, 178, length.out = 25),  # inhale
-                  rep(20, 25),  # hold
+                  rep(178, 25),  # hold
                   seq(178, 20, length.out = 25)),  # exhale
          stage = row_number(),  # frame of reference for animation
          #' change text variable to change length of each component
@@ -72,6 +72,7 @@ data_02 <- tibble(x = rep(0, 100),
                        rep(28.8, 25),  # hold
                        seq(28.8, 5, length.out = 25) # exhale
          ),
+         # used for the outer circle
          alpha = c(rep(0, 10),
                    seq(0, 0.975, 0.025),
                    rep(0.975, 10),
@@ -81,7 +82,7 @@ breathe_02 <- data_02 %>%
   ggplot(aes(x = x, y = y, label = text)) +
   ggpubr::background_image(space) +
   geom_point(size = data$size) +
-  geom_point(aes(x = 0, y = 0),
+  geom_point(aes(x = 0, y = -100),
              size = 178, color = "white", shape = 1, alpha = data$alpha) +
   geom_text(size = data$text_size - 2, color = "#ffffff", family = "Amatic SC") +
   xlim(-200, 200) + 
@@ -93,4 +94,4 @@ breathe_02 <- data_02 %>%
   exit_shrink() +
   ease_aes('linear')
 
-breathe_02
+animate(breathe_02, fps = 10)
