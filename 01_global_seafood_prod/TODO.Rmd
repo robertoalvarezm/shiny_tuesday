@@ -10,19 +10,25 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## Things to do
+* scatterplot that updates with reactiveVal() based on brush selection
+  + use scatterplot to fill a data table
 
 * add a slider to the year that then updates the graph with the calculated average value
   + ability to see change over time, like next//previous
-* animate changes over time
-* change the color based on a threshold value
-* line graph showing trends over time
-  + ability to select based on type
-* add a data table
+  + animate changes over time
 * select multiple years and create a stacked bar chart
+
+* fix up the labels, make it pretty(er)
+
+* change the color based on a threshold value
+* add a data table
 * hovering and interactivity with plots
-* scatterplot that updates with reactiveVal() based on brush selection
 
 ## Potential extensions
 * Play with plotly
 * Explore ggiraph
+
+## DONE
 * Dig in to bslib and thematic
+* line graph showing trends over time
+  + ability to select based on type
