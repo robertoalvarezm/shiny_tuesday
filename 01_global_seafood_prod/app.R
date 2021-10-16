@@ -23,9 +23,8 @@ ui <- fluidPage(
     sidebarPanel(
       
       tags$strong("Inputs for the bar plot"),
-      ## bar plot  
-      ### year input ----
-      
+      ## bar plot----  
+      ### year input
       selectizeInput(inputId = "year",
                      label = "Select a year",
                      #' because there are duplicate years, need to pull out
@@ -33,13 +32,20 @@ ui <- fluidPage(
                      choices = unique(tidy_fish$year), 
                      selected = "1950"),  
       
-      ## line graph
+      ## line graph----
       ### sector catch type
       tags$strong("Inputs for the line graph"),
       checkboxGroupInput(inputId = "sector_catch_type",
                          label = "Select a type",
                          choices = unique(tidy_fish$sector_catch_type),
-                         selected = unique(tidy_fish$sector_catch_type))
+                         selected = unique(tidy_fish$sector_catch_type)),
+      
+      ## scatterplot ----
+      tags$strong("Inputs for the scatterplot"),
+      selectizeInput(inputId = "x_axis",
+                     label = "Choose variable for x-axis",
+                     choices = is.numeric(tidy_fish),
+                     selected = "")
     ),
     
     ## main panel ----
@@ -55,6 +61,9 @@ ui <- fluidPage(
       
       # girafe
       girafeOutput("giraffe_plot"),
+      
+      # scatterplot (ggplot) ----
+      plotOutput("scatterplot"),
       
       # table from brushed lines in ggplot line graph
       tableOutput(outputId = "table_data")
@@ -123,6 +132,12 @@ server <- function(input, output, session) {
            options = list(opts_selection(type = "multiple", only_shiny = FALSE)))
   })
   
+  ## scatterplot (server) ----
+  output$scatterplot <- renderPlot({
+    
+    ggplot(reactive_fish_table(),
+           aes(x = ))
+  })
   ## sector type data table (server) ----
   output$table_data <- renderTable({
     

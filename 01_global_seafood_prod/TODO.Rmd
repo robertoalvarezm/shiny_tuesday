@@ -10,9 +10,6 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## Things to do
-* scatterplot that updates with reactiveVal() based on brush selection
-  + use scatterplot to fill a data table
-
 * add a slider to the year that then updates the graph with the calculated average value
   + ability to see change over time, like next//previous
   + animate changes over time
@@ -26,11 +23,13 @@ knitr::opts_chunk$set(echo = TRUE)
 * add a data table
 * hovering and interactivity with plots
 
-## Potential extensions
-* Play with plotly
-* Explore ggiraph
+* scatterplot that updates with reactiveVal() based on brush selection
+  + use scatterplot to fill a data table
+  + LOLJK we only have one numeric column :/
 
 ## DONE
 * Dig in to bslib and thematic
 * line graph showing trends over time
   + ability to select based on type
+* Play with plotly
+* Explore ggiraph
