@@ -38,21 +38,17 @@ ui <- fluidPage(
       checkboxGroupInput(inputId = "sector_catch_type",
                          label = "Select a type",
                          choices = unique(tidy_fish$sector_catch_type),
-                         selected = unique(tidy_fish$sector_catch_type)),
-      
-      ## scatterplot ----
-      tags$strong("Inputs for the scatterplot"),
-      selectizeInput(inputId = "x_axis",
-                     label = "Choose variable for x-axis",
-                     choices = is.numeric(tidy_fish),
-                     selected = "")
+                         selected = unique(tidy_fish$sector_catch_type))
     ),
     
     ## main panel ----
     mainPanel(
       
       ### sector type barplot (ui) ----
-      plotOutput(outputId = "sector_type_barplot"),
+      # plotOutput(outputId = "sector_type_barplot",
+      #            hover = hoverOpts(id = "plot_hover", delayType = "throttle")),
+      
+      girafeOutput("giraffe_bar"),
       
       ### sector type line graph (ui)
       # # ggplot
@@ -61,9 +57,6 @@ ui <- fluidPage(
       
       # girafe
       girafeOutput("giraffe_plot"),
-      
-      # scatterplot (ggplot) ----
-      plotOutput("scatterplot"),
       
       # table from brushed lines in ggplot line graph
       tableOutput(outputId = "table_data")
@@ -84,18 +77,18 @@ server <- function(input, output, session) {
   })
   
   ## sector type barplot (server) ----
-  output$sector_type_barplot <- renderPlot({
-    
-    req(input$year)
-    
-    ggplot(data = reactive_fish(),
-           aes(x = sector_catch_type, y = value,
-               fill = sector_catch_type)) + 
-      geom_col() + 
-      theme_bw() +
-      theme(legend.position = "none")
-    
-  }, res = 96)
+  # output$sector_type_barplot <- renderPlot({
+  #   
+  #   req(input$year)
+  #   
+  #   ggplot(data = reactive_fish(),
+  #          aes(x = sector_catch_type, y = value,
+  #              fill = sector_catch_type)) + 
+  #     geom_col() + 
+  #     theme_bw() +
+  #     theme(legend.position = "none")
+  #   
+  # }, res = 96)
   
   ## sector type line graph (server) ----
   ### plot ----
@@ -111,6 +104,22 @@ server <- function(input, output, session) {
   #     theme(legend.position = "none")
   #   
   # }, res = 96)
+  
+  output$giraffe_bar <- renderGirafe({
+    
+    req(input$year)
+    
+    gg_bar <- ggplot(reactive_fish(),
+                     aes(x = sector_catch_type, y = value, fill = sector_catch_type,
+                         tooltip = paste(year, value, sep = "\n"),
+                         data_id = sector_catch_type)) +
+      geom_col_interactive() + 
+      theme_bw() +
+      theme(legend.position = "none")
+    
+    girafe(ggobj = gg_bar,
+           options = list(opts_selection(type = "single", only_shiny = FALSE)))
+  })
   
   ### now in giraffe flavor ----
   
@@ -132,12 +141,7 @@ server <- function(input, output, session) {
            options = list(opts_selection(type = "multiple", only_shiny = FALSE)))
   })
   
-  ## scatterplot (server) ----
-  output$scatterplot <- renderPlot({
-    
-    ggplot(reactive_fish_table(),
-           aes(x = ))
-  })
+
   ## sector type data table (server) ----
   output$table_data <- renderTable({
     

@@ -16,12 +16,11 @@ knitr::opts_chunk$set(echo = TRUE)
 * select multiple years and create a stacked bar chart
 
 * add hover to bar chart
-
-* fix up the labels, make it pretty(er)
-
 * change the color based on a threshold value
 * add a data table
 * hovering and interactivity with plots
+* progressive brushing (see Mastering Shiny)
+* fix up the labels, make it pretty(er)
 
 * scatterplot that updates with reactiveVal() based on brush selection
   + use scatterplot to fill a data table
