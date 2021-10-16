@@ -77,6 +77,13 @@ server <- function(input, output, session) {
     tidy_fish %>% filter(sector_catch_type %in% input$sector_catch_type)
   })
   
+  ### STUCK HERE - SEE COLUMN CHART BELOW ###
+  reactive_fish_year_range <- reactive({
+    tidy_fish %>% 
+      filter(date >= input$year_range[1] & date <= input$daterange[2]) %>% 
+      mutate(avg_value = mean(value))
+  })
+  
   ## bar plot (server) ----
   output$giraffe_bar <- renderGirafe({
     
@@ -113,12 +120,13 @@ server <- function(input, output, session) {
            options = list(opts_selection(type = "multiple", only_shiny = FALSE)))
   })
   
+  ### STUCK HERE ###
   ## column chart (server) ----
   # col_chart
   output$col_chart <- renderPlot({
     
-    ggplot(reactive_fish_year(),
-           aes(x = sector_catch_type, y = value, fill = sector_catch_type)) +
+    ggplot(reactive_fish_year_range(),
+           aes(x = sector_catch_type, y = avg_value, fill = sector_catch_type)) +
       geom_col() +
       coord_flip() +
       theme_bw() +
