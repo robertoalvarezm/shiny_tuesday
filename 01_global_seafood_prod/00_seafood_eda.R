@@ -98,4 +98,10 @@ bigger_fish <- big_fish %>%
 
 glimpse(bigger_fish)
 
-
+# working with date ranges ----
+glimpse(tidy_fish)
+tidy_fish %>% 
+  filter(year >= 1950, year <= 1954) %>% 
+  group_by(sector_catch_type) %>% 
+  mutate(avg_value_by_type = mean(value)) %>% 
+  glimpse()
