@@ -14,6 +14,7 @@ tidy_fish <- read_csv(here("01_global_seafood_prod", "tidy_fish.csv"))
 
 # user interface ----
 ui <- fluidPage(
+  style = "max-height: 95vh; overflow-x: auto;",
   
   theme = bs_theme(version = 4,
                    bootswatch = "minty"),
@@ -50,7 +51,7 @@ ui <- fluidPage(
       ## data table and column chart
       tags$strong("Inputs for column chart and data table"),
       sliderInput(inputId = "year_range",
-                  label = "Select a range of years",
+                  label = "Select a range of years", 
                   min = 1950L, max = 2010L, sep = "", step = 1,
                   value = c(1950L, 1980L))
     ),
@@ -77,11 +78,11 @@ server <- function(input, output, session) {
     tidy_fish %>% filter(sector_catch_type %in% input$sector_catch_type)
   })
   
-  ### STUCK HERE - SEE COLUMN CHART BELOW ###
   reactive_fish_year_range <- reactive({
     tidy_fish %>% 
-      filter(date >= input$year_range[1] & date <= input$daterange[2]) %>% 
-      mutate(avg_value = mean(value))
+      filter(year >= input$year_range[1], year <= input$year_range[2]) %>%
+      group_by(sector_catch_type) %>% 
+      mutate(avg_value_by_type = mean(value))
   })
   
   ## bar plot (server) ----
@@ -119,14 +120,13 @@ server <- function(input, output, session) {
     girafe(ggobj = gg_line,
            options = list(opts_selection(type = "multiple", only_shiny = FALSE)))
   })
-  
-  ### STUCK HERE ###
+
   ## column chart (server) ----
   # col_chart
   output$col_chart <- renderPlot({
     
     ggplot(reactive_fish_year_range(),
-           aes(x = sector_catch_type, y = avg_value, fill = sector_catch_type)) +
+           aes(x = sector_catch_type, y = avg_value_by_type, fill = sector_catch_type)) +
       geom_col() +
       coord_flip() +
       theme_bw() +
@@ -136,6 +136,9 @@ server <- function(input, output, session) {
   
   ## DT datatable (to start - server)
   # table
+  output$table <- renderDT(
+    reactive_fish_year_range()
+  )
   
 }
 
