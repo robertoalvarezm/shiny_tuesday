@@ -5,6 +5,7 @@ library(dplyr)
 library(readr)
 library(thematic)
 library(ggiraph)
+library(DT)
 library(bslib)
 library(here)
 
@@ -17,7 +18,7 @@ ui <- fluidPage(
   theme = bs_theme(version = 4,
                    bootswatch = "minty"),
   
-  fillPage(padding = c(20, 100, 20, 100)), 
+  fillPage(padding = c(20, 80, 20, 80)), 
   
   titlePanel("Title goes here - give me a minute"),
   br(),
@@ -38,21 +39,28 @@ ui <- fluidPage(
                      choices = unique(tidy_fish$year), 
                      selected = "1950"),  
       
-      br(),
-      
       ## line graph----
       ### sector catch type
       tags$strong("Inputs for the line graph"),
       checkboxGroupInput(inputId = "sector_catch_type",
                          label = "Select a type",
                          choices = unique(tidy_fish$sector_catch_type),
-                         selected = unique(tidy_fish$sector_catch_type))
+                         selected = unique(tidy_fish$sector_catch_type)),
+      
+      ## data table and column chart
+      tags$strong("Inputs for column chart and data table"),
+      sliderInput(inputId = "year_range",
+                  label = "Select a range of years",
+                  min = 1950L, max = 2010L, sep = "", step = 1,
+                  value = c(1950L, 1980L))
     ),
     
     ## main panel ----
     mainPanel(fluidRow(
       splitLayout(cellWidths = c("50%", "50%"),
-                  girafeOutput("giraffe_bar"), girafeOutput("giraffe_plot"))
+                  girafeOutput("giraffe_bar"), girafeOutput("giraffe_plot")),
+      plotOutput("col_chart"),
+      DTOutput("table")
     ))
   )
 )
@@ -61,11 +69,11 @@ ui <- fluidPage(
 server <- function(input, output, session) {
   
   ## reactive dataframes because you know we need 'em ----
-  reactive_fish <- reactive({
+  reactive_fish_year <- reactive({
     tidy_fish %>% filter(year %in% input$year)
   })
   
-  reactive_fish_table <- reactive({
+  reactive_fish_type <- reactive({
     tidy_fish %>% filter(sector_catch_type %in% input$sector_catch_type)
   })
   
@@ -74,7 +82,7 @@ server <- function(input, output, session) {
     
     req(input$year)
     
-    gg_bar <- ggplot(reactive_fish(),
+    gg_bar <- ggplot(reactive_fish_year(),
                      aes(x = sector_catch_type, y = value, fill = sector_catch_type,
                          tooltip = paste(year, value, sep = "\n"),
                          data_id = sector_catch_type)) +
@@ -91,7 +99,7 @@ server <- function(input, output, session) {
     
     req(input$year)
     
-    gg_line <- ggplot(reactive_fish_table(),
+    gg_line <- ggplot(reactive_fish_type(),
                    aes(x = year, y = value, group = sector_catch_type,
                        tooltip = paste(sector_catch_type, value, year, sep = "\n"), 
                        data_id = NULL,
@@ -104,6 +112,22 @@ server <- function(input, output, session) {
     girafe(ggobj = gg_line,
            options = list(opts_selection(type = "multiple", only_shiny = FALSE)))
   })
+  
+  ## column chart (server) ----
+  # col_chart
+  output$col_chart <- renderPlot({
+    
+    ggplot(reactive_fish_year(),
+           aes(x = sector_catch_type, y = value, fill = sector_catch_type)) +
+      geom_col() +
+      coord_flip() +
+      theme_bw() +
+      theme(legend.position = "none")
+    
+  })
+  
+  ## DT datatable (to start - server)
+  # table
   
 }
 

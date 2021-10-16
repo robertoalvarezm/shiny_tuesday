@@ -10,18 +10,19 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## Things to do
-* add a slider to the year that then updates the graph with the calculated average value
+* add a slider to the year that then updates a graph and data table with the calculated average value
   + ability to see change over time, like next//previous
   + animate changes over time
+  
 * select multiple years and create a stacked bar chart
-
-* add hover to bar chart
+* does "minty" apply to a gt or reactable table?
+* move each plot to its own navpage?
 * change the color based on a threshold value
 * add a data table
 * hovering and interactivity with plots
 * progressive brushing (see Mastering Shiny)
 * fix up the labels, make it pretty(er)
-
+* fuss with the layout (friable)
 * scatterplot that updates with reactiveVal() based on brush selection
   + use scatterplot to fill a data table
   + LOLJK we only have one numeric column :/
@@ -32,3 +33,4 @@ knitr::opts_chunk$set(echo = TRUE)
   + ability to select based on type
 * Play with plotly
 * Explore ggiraph
+* add hover to bar chart
