@@ -20,18 +20,20 @@ ui <- fluidPage(
   ),
   
   fluidRow(
-    # button tests
+    # # button tests
+    # column(width = 2, 
+    #        id = "test_button",
+    #        class = "btn action-button",
+    #        img(src = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSMarYB40UbCVZrK2iqGCeuUjGzsDOHNiqqPWfLWcijFP202PAmew75Zh2JIfpQhFOd3Bs&usqp=CAU")
+    # ),
+    
     column(width = 2, 
-           id = "test_button",
+           id = "field_pumpkin_button",
            class = "btn action-button",
-           img(src = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSMarYB40UbCVZrK2iqGCeuUjGzsDOHNiqqPWfLWcijFP202PAmew75Zh2JIfpQhFOd3Bs&usqp=CAU")
+           img(src = "field_pumpkin.png",
+               height = 150, width = 150)
     ),
 
-    column(width = 2,
-           actionButton(inputId = "field_pumpkin_button",
-                        label = "Field Pumpkin",
-                        width = "100%")
-           ),
     column(width = 2,
            actionButton(inputId = "giant_pumpkin_button",
                         label = "Giant Pumpkin",
@@ -62,7 +64,10 @@ ui <- fluidPage(
   br(),
   
   fluidRow(
-    textOutput(outputId = "printed_prompt")
+    column(width = 12,
+           style = "text-align:center",
+           textOutput(outputId = "printed_prompt")
+    )
   ),
   
   fluidRow(
@@ -73,7 +78,7 @@ ui <- fluidPage(
 # server ----
 server <- function(input, output, session) {
   
-  out <- eventReactive(input$test_button, {
+  out <- eventReactive(input$field_pumpkin_button, {
     paste("IT WORKS")
   })
   
