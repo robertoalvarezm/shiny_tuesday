@@ -19,15 +19,18 @@ ui <- fluidPage(
     tags$h1("Select your fighter:")
   ),
   
-  ## want to replace button with pixel art
-  # icon() a wrapper on img tags, could we pass src = "..." to icon?
-  # -OR- use an image tag inside the button
   fluidRow(
+    # button tests
+    column(width = 2, 
+           id = "test_button",
+           class = "btn action-button",
+           img(src = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSMarYB40UbCVZrK2iqGCeuUjGzsDOHNiqqPWfLWcijFP202PAmew75Zh2JIfpQhFOd3Bs&usqp=CAU")
+    ),
+
     column(width = 2,
            actionButton(inputId = "field_pumpkin_button",
                         label = "Field Pumpkin",
-                        width = "100%",
-                        icon = )
+                        width = "100%")
            ),
     column(width = 2,
            actionButton(inputId = "giant_pumpkin_button",
@@ -59,14 +62,24 @@ ui <- fluidPage(
   br(),
   
   fluidRow(
+    textOutput(outputId = "printed_prompt")
+  ),
+  
+  fluidRow(
     plotOutput(outputId = "fighter_stats")
   )
 )
 
 # server ----
 server <- function(input, output, session) {
-  # bar chart of stats
-  #stats <- eventReactive("field_pumpkin_button")
+  
+  out <- eventReactive(input$test_button, {
+    paste("IT WORKS")
+  })
+  
+  output$printed_prompt <- renderText({
+    out()
+  })
 }
 
 # run app ----
