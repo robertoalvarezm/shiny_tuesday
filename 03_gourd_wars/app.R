@@ -1,16 +1,17 @@
 # set up ----
 library(shiny)
 library(readr)
+library(dplyr)
+library(DT)
 library(here)
 
 # data import ----
-plong <- read_csv(here("03_gourd_wars", "pivoted_pumpkins.csv"))
-plong %>% 
+plong <- read_csv(here("03_gourd_wars/data", "pivoted_pumpkins.csv"))
+plong_table <- plong %>% 
   mutate(type = as.factor(type),
          stats = as.factor(stats)) %>% 
   group_by(type) %>% 
-  summarise(avg_value = mean(value, na.rm = TRUE)) ->
-  plong_table
+  summarise(avg_value = mean(value, na.rm = TRUE)) 
 
 # user interface ----
 ui <- fluidPage(
@@ -20,20 +21,16 @@ ui <- fluidPage(
   ),
   
   fluidRow(
-    # # button tests
-    # column(width = 2, 
-    #        id = "test_button",
-    #        class = "btn action-button",
-    #        img(src = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSMarYB40UbCVZrK2iqGCeuUjGzsDOHNiqqPWfLWcijFP202PAmew75Zh2JIfpQhFOd3Bs&usqp=CAU")
-    # ),
     
+    # button with image (instead of text) ----
     column(width = 2, 
            id = "field_pumpkin_button",
            class = "btn action-button",
            img(src = "field_pumpkin.png",
-               height = 150, width = 150)
+               height = 125, width = 125)
     ),
-
+    
+    # standard actionButtons - swap later ----
     column(width = 2,
            actionButton(inputId = "giant_pumpkin_button",
                         label = "Giant Pumpkin",
@@ -72,12 +69,49 @@ ui <- fluidPage(
   
   fluidRow(
     plotOutput(outputId = "fighter_stats")
+  ),
+  
+  fluidRow(
+    DTOutput(outputId = "test_table")
   )
 )
 
 # server ----
 server <- function(input, output, session) {
   
+  # making each button reactive for table//graph filtration
+  current_type <- reactiveVal()
+  observeEvent(input$field_pumpkin_button, current_type("Field Pumpkin"))
+  observeEvent(input$giant_pumpkin_button, current_type("Giant Pumpkin"))
+  observeEvent(input$giant_squash_button, current_type("Giant Squash"))
+  observeEvent(input$giant_watermelon_button, current_type("Giant Watermelon"))
+  observeEvent(input$long_gourd_button, current_type("Long Gourd"))
+  observeEvent(input$tomato_button, current_type("Tomato"))
+  
+  # table from reactiveVal
+  output$test_table <- renderDataTable({
+    req(current_type())
+    plong_table %>%
+      filter(type == current_type())
+  })
+  
+  # graph from reactiveVal
+  output$fighter_stats <- renderPlot({
+    req(current_type()) 
+    plong %>% 
+      mutate(type = as.factor(type),
+             stats = as.factor(stats)) %>% 
+      group_by(type, stats) %>% 
+      summarise(avg_value = mean(value, na.rm = TRUE),
+                dplyr.summarize.inform = FALSE) %>% 
+      filter(type == current_type()) %>% 
+      ggplot(aes(x = stats, y = avg_value)) +
+      geom_col() + 
+      coord_flip() +
+      theme_bw()
+  })
+  
+  # button testing (server) ----
   out <- eventReactive(input$field_pumpkin_button, {
     paste("IT WORKS")
   })
