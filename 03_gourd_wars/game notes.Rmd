@@ -1,0 +1,42 @@
+---
+title: "gourd wars notes"
+author: "Jesse Mostipak"
+date: "10/22/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## NOTES
+- need to filter a single dataframe by six different buttons
+- observeEvent each button and then update a single reactiveVal with the new icon:
+  + `current_type <- reactiveVal()`
+  + `observeEvent(input$fp, current_type("Field Pumpkin"))` - want to match the `current_type` argument to what is in the dataframe. this holds true for any time we set a `reactiveVal()`
+  
+
+## TODO
+- evaluate stat distribution within a type
+- decide what stats represent
+- change `pumpkin_vintage` to a randomly assigned integer
+- alter the data and scale by type into percentiles
+- should weapons alter stats? or are they purely decorative
+- make pixel art: fighters, accessories, animation state
+- decide on accessories: each gives a small (10-20 percentiles)
+- generate missing stats
+  + ott and est_weight for tomatoes
+  + possibly est_weight for long gourd (are they ghosts?)
+- READ UP ON MODULES
+
+  
+## THINKING THROUGH STATS AND ABILITIES
+- Tan: mechanism for the battle would be to scale across types and get a percentile value, and then the percentile value is what determines who "wins" in a given match-up
+
+## GAME DESIGN
+1. arrive on page, intro text that explains the game mechanics
+2. click on each fighter to get a description and information on relative stats (no graphs, no data)
+3. choose fighter, assigned a randomly selected individual (with randomly generated name?) from your class (point of no return)
+4. select accessories (2 accessories, list of 10+, randomly shown three at time with replacement and you have 3 chances to select, no give backs). could weight the randomization to make some items more rare than others
+5. do battle! face off against a randomly selected fighter from "the database" - fighter and their accessories are randomly selected (could weight? could just have a hidden BOSS PUMPKIN) [[click FIGHT button and there's a small animation - is this possible?]]
+6. get reward (certificate? cookie? candy corn? reward could be based on the difficulty of the fight) and option to play again [[if you stay within the same session, do you carry over your win//loss?]]

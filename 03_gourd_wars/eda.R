@@ -51,12 +51,12 @@ pumpkins_tidy <- pumpkins_03 %>%
          pumpkin_vintage = 2021 - year) %>% 
   select(-variety)
 
-write_csv(pumpkins_tidy, here("03_gourd_wars", "pumpkins_tidy.csv"))
+write_csv(pumpkins_tidy, here("03_gourd_wars/data", "pumpkins_tidy.csv"))
 
 ## app EDA ----
-tidy_p <- read_csv(here("03_gourd_wars", "pumpkins_tidy.csv"))
+tidy_p <- read_csv(here("03_gourd_wars/data", "pumpkins_tidy.csv"))
 
-# fighter types  ----
+# wrangling  ----
 tidy_p %>% 
   count(type)
 
@@ -70,9 +70,10 @@ pumpkin_long <- tidy_p %>%
   mutate(stats = as.factor(stats),
          type = as.factor(type)) 
 
-write_csv(pumpkin_long, here("03_gourd_wars", "pivoted_pumpkins.csv"))
+write_csv(pumpkin_long, here("03_gourd_wars/data", "pivoted_pumpkins.csv"))
 
-plong <- read_csv(here("03_gourd_wars", "pivoted_pumpkins.csv"))
+# sample plots ----
+plong <- read_csv(here("03_gourd_wars/data", "pivoted_pumpkins.csv"))
 glimpse(plong)
 
 # calculating stats for the overall average
@@ -89,5 +90,34 @@ plong %>%
   summarise(avg_value = mean(value, na.rm = TRUE)) %>% 
   filter(type == "Field Pumpkin") %>% 
   ggplot(aes(x = stats, y = avg_value)) +
-  geom_col()
+  geom_col() + 
+  coord_flip() +
+  theme_bw()
 
+glimpse(plong)
+plong %>% 
+  distinct(type)
+
+# working on reactive graph
+plong %>% 
+  filter(type == "Field Pumpkin") %>%
+  group_by(type)
+  mutate(avg_value = mean(value, na.rm = TRUE)) %>% 
+  ggplot(aes(x = stats, y = avg_value)) +
+  geom_col() + 
+  coord_flip() +
+  theme_bw()
+  
+# stat distribution within a type
+## decision to be made:
+##   - how is fighter selected?
+#'     -- could be a random individual from a class
+#'     -- could be a representative individual from the class, using aggregate//averaged stats
+
+glimpse(plong)
+
+plong %>% 
+  group_by(type) %>% 
+  ggplot(aes(x = value, y = type)) +
+  geom_boxplot() +
+  facet_wrap(vars(stats), scales = "free_x")
